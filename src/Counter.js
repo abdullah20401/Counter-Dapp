@@ -15,6 +15,8 @@ import { COUNTER_ABI, COUNTER_ADDRESS } from "./contracts/config";
 
 function Counter() {
   const [count, setCount] = useState("-");
+  const [iserror, setIsError] = useState(false);
+  const [errorMessage, setErrorMessage] = useState();
 
   useEffect(() => {
     fetchCount();
@@ -25,7 +27,8 @@ function Counter() {
     try {
       await window.ethereum.request({ method: "eth_requestAccounts" });
     } catch (error) {
-      <Error message="There is an error" />;
+      setIsError(true);
+      setErrorMessage(error.toString());
     }
   }
 
@@ -43,6 +46,7 @@ function Counter() {
         setCount(data.toString());
       } catch (err) {
         console.log("Error: ", err);
+        setErrorMessage(err.toString());
       }
     }
   }
@@ -82,6 +86,7 @@ function Counter() {
 
   return (
     <Container>
+      {iserror && <Error message={errorMessage} />}
       <Navbar>
         <Container>
           <Navbar.Brand href="" className="justify-content-end"></Navbar.Brand>
